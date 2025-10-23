@@ -40,14 +40,14 @@ terraform destroy
 4. Link DNS ALB: http://golden-owl-alb-1150134230.ap-southeast-1.elb.amazonaws.com/
    
 5. Auto Scaling
-
+   Not yet scaled up
+   
    ![1-image](./image/1.png)
 
-    Not yet scaled up
+   Use the ` ab ` tool to send the request
    ![2-image](./image/2.png)
 
-    Use the ` ab ` tool to send the request
+    Scale up 
    ![3-image](./image/3.png)
 
-    Scale up to 5 task running
-   ![4-image](./image/4.png)
+    
