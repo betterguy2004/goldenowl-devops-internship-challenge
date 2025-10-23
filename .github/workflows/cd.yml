@@ -75,7 +75,30 @@ jobs:
             --auto-scaling-group-name $ASG_NAME \
             --launch-template "LaunchTemplateId=$TEMPLATE_ID,Version=$NEW_VERSION"
           
+          # Check if there's an ongoing instance refresh
+          echo "Checking for existing instance refresh..."
+          REFRESH_STATUS=$(aws autoscaling describe-instance-refreshes \
+            --auto-scaling-group-name $ASG_NAME \
+            --query 'InstanceRefreshes[0].Status' \
+            --output text)
+          
+          if [ "$REFRESH_STATUS" == "InProgress" ] || [ "$REFRESH_STATUS" == "Pending" ]; then
+            echo "Found existing instance refresh with status: $REFRESH_STATUS"
+            REFRESH_ID=$(aws autoscaling describe-instance-refreshes \
+              --auto-scaling-group-name $ASG_NAME \
+              --query 'InstanceRefreshes[0].InstanceRefreshId' \
+              --output text)
+            
+            echo "Cancelling existing instance refresh: $REFRESH_ID"
+            aws autoscaling cancel-instance-refresh \
+              --auto-scaling-group-name $ASG_NAME || true
+            
+            echo "Waiting for cancellation to complete..."
+            sleep 10
+          fi
+          
           # Start instance refresh for rolling update
+          echo "Starting new instance refresh..."
           aws autoscaling start-instance-refresh \
             --auto-scaling-group-name $ASG_NAME \
             --preferences '{"MinHealthyPercentage": 50}'
