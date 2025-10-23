@@ -220,7 +220,7 @@ resource "aws_autoscaling_group" "app" {
   }
 }
 
-# Auto Scaling Policy
+# Auto Scaling Policy - Scale Up
 resource "aws_autoscaling_policy" "scale_up" {
   name                   = "golden-owl-scale-up"
   scaling_adjustment     = 1
@@ -229,10 +229,55 @@ resource "aws_autoscaling_policy" "scale_up" {
   autoscaling_group_name = aws_autoscaling_group.app.name
 }
 
+# Auto Scaling Policy - Scale Down
 resource "aws_autoscaling_policy" "scale_down" {
   name                   = "golden-owl-scale-down"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
   autoscaling_group_name = aws_autoscaling_group.app.name
+}
+
+# CloudWatch Alarm - High CPU (Scale Up)
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  alarm_name          = "golden-owl-cpu-high"
+  alarm_description   = "Triggers when CPU utilization exceeds 70%"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 70
+  alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.app.name
+  }
+
+  tags = {
+    Name = "golden-owl-cpu-high-alarm"
+  }
+}
+
+# CloudWatch Alarm - Low CPU (Scale Down)
+resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  alarm_name          = "golden-owl-cpu-low"
+  alarm_description   = "Triggers when CPU utilization falls below 30%"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 30
+  alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.app.name
+  }
+
+  tags = {
+    Name = "golden-owl-cpu-low-alarm"
+  }
 }
