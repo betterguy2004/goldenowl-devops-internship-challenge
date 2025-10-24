@@ -1,4 +1,4 @@
-# Golden Owl DevOps Internship - Technical Test
+# Golden Owl DevOps Internship - Technical Testt
 At Golden Owl, we believe in treating infrastructure as code and automating resource provisioning to the fullest extent possible. 
 
 In this technical test, we challenge you to create a robust CI build pipeline using GitHub Actions. You have the freedom to complete this test in your local environment.
