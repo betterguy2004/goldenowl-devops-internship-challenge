@@ -37,7 +37,7 @@ terraform destroy
 3. Build CI/CD Pipeline
    - CI: Compile and run unit test
    - CD: Build and push to dockerhub, update launch template, and deploy to EC2.
-4. Link DNS ALB: http://golden-owl-alb-1150134230.ap-southeast-1.elb.amazonaws.com/
+4. Link DNS ALB: http://golden-owl-alb-1556309316.ap-southeast-1.elb.amazonaws.com
    
 5. Auto Scaling
    Not yet scaled up
