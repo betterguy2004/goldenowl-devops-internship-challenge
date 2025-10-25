@@ -44,7 +44,7 @@ terraform destroy
    
    ![1-image](./image/1.png)
 
-   Use the ` ab ` tool to send the request
+   Load test CPU
    ![2-image](./image/2.png)
 
     Scale up 
